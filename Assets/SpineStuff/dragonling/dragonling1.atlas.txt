@@ -1,0 +1,139 @@
+
+dragonling1.png
+size: 2048,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+arm_a
+  rotate: true
+  xy: 1609, 708
+  size: 160, 326
+  orig: 160, 326
+  offset: 0, 0
+  index: -1
+arm_b
+  rotate: true
+  xy: 1, 1
+  size: 75, 298
+  orig: 75, 298
+  offset: 0, 0
+  index: -1
+body
+  rotate: false
+  xy: 912, 524
+  size: 409, 491
+  orig: 409, 491
+  offset: 0, 0
+  index: -1
+eye_highlight
+  rotate: false
+  xy: 1955, 946
+  size: 19, 20
+  orig: 19, 20
+  offset: 0, 0
+  index: -1
+eye_iris
+  rotate: false
+  xy: 1955, 967
+  size: 44, 48
+  orig: 44, 48
+  offset: 0, 0
+  index: -1
+eye_pupil_1
+  rotate: false
+  xy: 1936, 844
+  size: 10, 24
+  orig: 10, 24
+  offset: 0, 0
+  index: -1
+eye_pupil_2
+  rotate: false
+  xy: 1293, 496
+  size: 23, 27
+  orig: 23, 27
+  offset: 0, 0
+  index: -1
+eye_white
+  rotate: false
+  xy: 1244, 473
+  size: 48, 50
+  orig: 48, 50
+  offset: 0, 0
+  index: -1
+head_a
+  rotate: false
+  xy: 1, 77
+  size: 455, 219
+  orig: 455, 219
+  offset: 0, 0
+  index: -1
+head_b
+  rotate: false
+  xy: 1609, 869
+  size: 345, 146
+  orig: 345, 146
+  offset: 0, 0
+  index: -1
+leg_a
+  rotate: true
+  xy: 1322, 565
+  size: 141, 277
+  orig: 141, 277
+  offset: 0, 0
+  index: -1
+leg_b
+  rotate: true
+  xy: 457, 89
+  size: 207, 188
+  orig: 207, 188
+  offset: 0, 0
+  index: -1
+tail
+  rotate: false
+  xy: 912, 307
+  size: 331, 216
+  orig: 331, 216
+  offset: 0, 0
+  index: -1
+throat
+  rotate: false
+  xy: 1322, 707
+  size: 286, 308
+  orig: 286, 308
+  offset: 0, 0
+  index: -1
+tooth_1
+  rotate: false
+  xy: 300, 34
+  size: 33, 42
+  orig: 33, 42
+  offset: 0, 0
+  index: -1
+tooth_2
+  rotate: true
+  xy: 1322, 536
+  size: 28, 49
+  orig: 28, 49
+  offset: 0, 0
+  index: -1
+tooth_3
+  rotate: false
+  xy: 1244, 435
+  size: 26, 37
+  orig: 26, 37
+  offset: 0, 0
+  index: -1
+wing_a
+  rotate: false
+  xy: 1, 297
+  size: 647, 718
+  orig: 647, 718
+  offset: 0, 0
+  index: -1
+wing_b
+  rotate: false
+  xy: 649, 298
+  size: 262, 717
+  orig: 262, 717
+  offset: 0, 0
+  index: -1
