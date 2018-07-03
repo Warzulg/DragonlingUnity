@@ -290,7 +290,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -274319043
+  randomSeed: 487001914
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -3659,9 +3659,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 620244974}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a074891112b3e3f4abf5473021ee0b7b, type: 3}
+  m_Script: {fileID: 11500000, guid: caeee7ec262c84d468ecd03a9e6e251d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsActive: 0
 --- !u!1 &757252779
 GameObject:
   m_ObjectHideFlags: 0
@@ -4021,9 +4022,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 825699257}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 297d06ac10f21f04e87ca9105cfe9fb0, type: 3}
+  m_Script: {fileID: 11500000, guid: 7e3bfa3c919f4e644bc5cbce28468186, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SkeletonAnimation: {fileID: 0}
   Moving: 0
   Airborne: 0
   Flying: 0
@@ -4206,7 +4208,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1208319166}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d641332182e699043baef8adf5422e44, type: 3}
+  m_Script: {fileID: 11500000, guid: 93ae3715e551342418028987d198e9d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   debug_animblock: {fileID: 0}
@@ -4543,7 +4545,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1618580792}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8089d4c19234934469d45f4de3b8f960, type: 3}
+  m_Script: {fileID: 11500000, guid: e6d22e283024a854ab33d87f7f5b7035, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!50 &1618580797
