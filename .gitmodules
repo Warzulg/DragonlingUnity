@@ -1,0 +1,3 @@
+[submodule "Assets/Content"]
+	path = Assets/Content
+	url = https://github.com/Warzulg/DragonlingUnityContent
