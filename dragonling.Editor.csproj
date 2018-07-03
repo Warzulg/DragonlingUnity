@@ -321,6 +321,8 @@
     <Compile Include="Assets\Scripts\spine-unity\Assets\spine-unity\SkeletonUtility\Editor\SkeletonUtilityInspector.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Content\SpineStuff\dragonling\dragonling1.atlas.txt" />
+    <None Include="Assets\Content\SpineStuff\dragonling\dragonling1.json.txt" />
     <None Include="Assets\Scripts\spine-unity\Assets\Spine Examples\Spine\Dragon\dragon.atlas.txt" />
     <None Include="Assets\Scripts\spine-unity\Assets\Spine Examples\Spine\Dragon\license.txt" />
     <None Include="Assets\Scripts\spine-unity\Assets\Spine Examples\Spine\Eyes\eyes.atlas.txt" />
@@ -377,8 +379,6 @@
     <None Include="Assets\Scripts\spine-unity\Assets\spine-unity\Shaders\Utility\Hidden-Spine-Bones.shader" />
     <None Include="Assets\Scripts\spine-unity\Assets\spine-unity\Shaders\Utility\HiddenPass.shader" />
     <None Include="Assets\Scripts\spine-unity\Assets\spine-unity\version.txt" />
-    <None Include="Assets\SpineStuff\dragonling\dragonling1.atlas.txt" />
-    <None Include="Assets\SpineStuff\dragonling\dragonling1.json.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
