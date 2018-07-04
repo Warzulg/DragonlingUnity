@@ -7,9 +7,6 @@ using UnityEngine;
 namespace Dragonling.Utility {
 
     public class DebugUI : MonoBehaviour {
-        private static Color WHITE = new Color(1, 1, 1);
-        private static Color RED = new Color(1, 0, 0);
-
         public Text debug_animblock;
         public Text debug_idlestart;
         public Text debug_idlestop;
@@ -21,19 +18,19 @@ namespace Dragonling.Utility {
         }
 
         void Update() {
-            debug_animblock.color = WHITE;
-            debug_idlestart.color = WHITE;
-            debug_idlestop.color = WHITE;
+            debug_animblock.color = Color.white;
+            debug_idlestart.color = Color.white;
+            debug_idlestop.color = Color.white;
         }
 
         public void Flash_AnimBlock() {
-            debug_animblock.color = RED;
+            debug_animblock.color = Color.red;
         }
         public void Flash_IdleStart() {
-            debug_idlestart.color = RED;
+            debug_idlestart.color = Color.red;
         }
         public void Flash_IdleStop() {
-            debug_idlestop.color = RED;
+            debug_idlestop.color = Color.red;
         }
     }
 
