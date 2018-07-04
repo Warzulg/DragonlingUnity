@@ -110,17 +110,11 @@ namespace Dragonling.Controllers {
             Airborne = Body.velocity.y != 0F;
 
             if (Input.anyKey) {
-                if (Input.GetKey(KeyCode.W)) {
-
-                }
                 if (Input.GetKey(KeyCode.A)) {
                     Body.AddForce(new Vector2(-_Acceleration, 0), ForceMode2D.Force);
                 } else if (Input.GetKey(KeyCode.D)) {
                     Body.AddForce(new Vector2(_Acceleration, 0), ForceMode2D.Force);
                 }
-            }
-            if (Input.GetKey(KeyCode.S)) {
-
             }
         }
 
@@ -175,11 +169,7 @@ namespace Dragonling.Controllers {
         }
 
         private void AttackBasic() {
-            if (Moving) {
-                SetAnim(AnimTrack.Attack, Anim.ATTACK_BASIC_MOVING, false);
-            } else {
-                SetAnim(AnimTrack.Attack, Anim.ATTACK_BASIC_STATIC, false);
-            }
+            SetAnim(AnimTrack.Attack, Moving ? Anim.ATTACK_BASIC_MOVING : Anim.ATTACK_BASIC_STATIC, false);
             AddAnimEmpty(AnimTrack.Attack, 0);
         }
 

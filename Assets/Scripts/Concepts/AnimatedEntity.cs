@@ -8,7 +8,7 @@ using Spine.Unity;
 
 namespace Dragonling.Concepts {
 
-    public class AnimatedEntity : MonoBehaviour {
+    abstract public class AnimatedEntity : MonoBehaviour {
         public Spine.AnimationState AnimationState;
         public SkeletonAnimation SkeletonAnimation;
 
