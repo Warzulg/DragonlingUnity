@@ -15,13 +15,17 @@ namespace Dragonling.Controllers {
         private float _Acceleration = 200F;
         private float _JumpStrength = 100F;
         private float _FlightDragDiff = 2F;
+        private Vector3 _CameraOffset = new Vector3(4, 4, -10);
 
         private FireBreathController FireBreath;
         private Rigidbody2D Body;
+        private PolygonCollider2D Collider;
+        private Camera Camera;
 
         public bool Moving;
         public bool Airborne;
         public bool Flying;
+        public bool Flipped;
 
         private DebugUI DebugUI;
 
@@ -49,12 +53,15 @@ namespace Dragonling.Controllers {
 
         private void Init() {
             DebugUI = FindObjectOfType<Canvas>().GetComponent<DebugUI>();
-
-            SkeletonAnimation = GetComponent<SkeletonAnimation>();
+            
+            SkeletonAnimation = GetComponentInChildren<SkeletonAnimation>();
             AnimationState = SkeletonAnimation.AnimationState;
-            Body = GetComponent<Rigidbody2D>();
+            Body = GetComponentInChildren<Rigidbody2D>();
+            Collider = GetComponentInChildren<PolygonCollider2D>();
+            Camera = GetComponentInChildren<Camera>();
             FireBreath = GetComponentInChildren<FireBreathController>();
 
+            Flip(false);
             SetAnim(AnimTrack.Movement, Anim.IDLE_NORMAL, true);
         }
 
@@ -64,6 +71,20 @@ namespace Dragonling.Controllers {
 
         private void FixedUpdate() {
             ResolveMovement();
+            UpdateColiderPosition();
+            UpdateCameraPosition();
+            Debug.DrawLine(new Vector3(0, 0, 0), Collider.transform.position);
+        }
+
+        private void UpdateCameraPosition() {
+            Camera.transform.position = Collider.transform.position + _CameraOffset;
+        }
+
+        private void UpdateColiderPosition() {
+            SkeletonAnimation.Skeleton.UpdateWorldTransform();
+            Bone rootBone = SkeletonAnimation.Skeleton.RootBone;
+            Collider.transform.Translate(new Vector3(0, rootBone.Y, 0));
+            DebugUI.Display_UpdatePos(Collider.transform.position);
         }
 
         private void HandleInput() {
@@ -119,10 +140,8 @@ namespace Dragonling.Controllers {
         }
 
         private void Flip(bool flipX) {
-            SkeletonAnimation.Skeleton.FlipX = flipX;
-        }
-        public bool Flipped() {
-            return SkeletonAnimation.Skeleton.FlipX;
+            Collider.transform.rotation = Quaternion.LookRotation(flipX ? Vector3.back : Vector3.forward, Vector3.up);
+            Flipped = flipX;
         }
 
         private bool AnimationLock(AnimTrack track) {
@@ -231,13 +250,13 @@ namespace Dragonling.Controllers {
         }
 
         private void Jump() {
-            Body.AddForce(new Vector2(0, _JumpStrength), ForceMode2D.Impulse);
+            //Body.AddForce(new Vector2(0, _JumpStrength), ForceMode2D.Impulse);
             SetAnim(AnimTrack.Movement, Anim.MOVE_JUMPING, false);
             Airborne = true;
-            CurrectTrackEntry(AnimTrack.Movement).End += delegate {
+            CurrectTrackEntry(AnimTrack.Movement).Complete += delegate {
                 Airborne = false;
+                SetAnim(AnimTrack.Movement, Moving ? Anim.MOVE_RUNNING_LOOP : Anim.IDLE_NORMAL, true);
             };
-            AddAnim(AnimTrack.Movement, Moving ? Anim.MOVE_RUNNING_LOOP : Anim.IDLE_NORMAL, true);
         }
 
         private void Duck() {
