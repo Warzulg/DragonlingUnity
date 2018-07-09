@@ -217,7 +217,7 @@
     <None Include="Assets\Scripts\Libraries\spine-unity\Assets\spine-unity\Modules\Shaders\Sprite\SpritePixelLighting.cginc" />
     <None Include="Assets\Scripts\Libraries\spine-unity\Assets\spine-unity\Modules\Shaders\Sprite\SpriteLighting.cginc" />
     <None Include="Assets\Scripts\Libraries\spine-unity\Assets\Spine Examples\Spine\Gauge\Gauge.atlas.txt" />
-    <None Include="Assets\Content\SpineStuff\dragonling\dragonling1.json.txt" />
+    <None Include="Assets\Resources\SpineStuff\dragonling\dragonling1.json.txt" />
     <None Include="Assets\Scripts\Libraries\spine-unity\Assets\spine-unity\Modules\SkeletonGraphic\Shaders\Spine-SkeletonGraphic-TintBlack.shader" />
     <None Include="Assets\Scripts\Libraries\spine-unity\Assets\Spine Examples\Spine\FootSoldier\FS_White.atlas.txt" />
     <None Include="Assets\Scripts\Libraries\spine-unity\Assets\spine-unity\Modules\Shaders\Sprite\ShaderShared.cginc" />
@@ -241,7 +241,7 @@
     <None Include="Assets\Scripts\Libraries\spine-unity\Assets\spine-unity\Modules\Shaders\Spine-Skeleton-Tint.shader" />
     <None Include="Assets\Scripts\Libraries\spine-unity\Assets\spine-unity\Modules\Shaders\Sprite\SpritesUnlit.shader" />
     <None Include="Assets\Scripts\Libraries\spine-unity\Assets\spine-unity\Shaders\Utility\Hidden-Spine-Bones.shader" />
-    <None Include="Assets\Content\SpineStuff\dragonling\dragonling1.atlas.txt" />
+    <None Include="Assets\Resources\SpineStuff\dragonling\dragonling1.atlas.txt" />
     <None Include="Assets\Scripts\Libraries\spine-unity\Assets\spine-unity\Modules\Shaders\Sprite\SpritesVertexLit.shader" />
     <None Include="Assets\Scripts\Libraries\spine-unity\Assets\spine-unity\Modules\Ghost\Shaders\Spine-Special-Skeleton-Ghost.shader" />
     <None Include="Assets\Scripts\Libraries\spine-unity\Assets\spine-unity\Modules\Shaders\Sprite\CGIncludes\SpriteVertexLighting.cginc" />

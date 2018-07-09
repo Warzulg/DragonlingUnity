@@ -16,6 +16,9 @@ namespace Dragonling.Controllers {
 
         public bool IsActive;
 
+        private Dictionary<string, AudioClip> AudioClips;
+        private AudioSource AudioEmitter;
+
         void Start() {
             Init();
         }
@@ -25,6 +28,11 @@ namespace Dragonling.Controllers {
             Player = GetComponentInParent<PlayerController>();
             Main = ParticleSystem.main;
             Shape = ParticleSystem.shape;
+
+            AudioEmitter = GetComponent<AudioSource>();
+            AudioClips = new Dictionary<string, AudioClip>();
+            //FIXME: solchen scheiß in ne art ressource-helper auslagern:
+            AudioClips.Add("firebreath", Resources.Load<AudioClip>("Sounds/dragonling/firebreath"));
         }
 
         void Update() {
@@ -45,6 +53,8 @@ namespace Dragonling.Controllers {
 
         public void Activate() {
             ParticleSystem.Play();
+            AudioEmitter.clip = AudioClips["firebreath"];
+            AudioEmitter.Play((ulong)(44100 * Main.startDelay.constant));
         }
 
         public void SetStartDelay(float delay) {
