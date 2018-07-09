@@ -54,7 +54,7 @@ namespace Dragonling.Controllers {
         public void Activate() {
             ParticleSystem.Play();
             AudioEmitter.clip = AudioClips["firebreath"];
-            AudioEmitter.Play((ulong)(44100 * Main.startDelay.constant));
+            AudioEmitter.PlayDelayed(Main.startDelay.constant);
         }
 
         public void SetStartDelay(float delay) {
