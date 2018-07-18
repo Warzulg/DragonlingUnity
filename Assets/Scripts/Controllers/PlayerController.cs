@@ -83,7 +83,6 @@ namespace Dragonling.Controllers {
             ResolveMovement();
             UpdateColiderPosition();
             UpdateCameraPosition();
-            Debug.DrawLine(new Vector3(0, 0, 0), Collider.transform.position);
         }
 
         private void UpdateCameraPosition() {
@@ -91,10 +90,9 @@ namespace Dragonling.Controllers {
         }
 
         private void UpdateColiderPosition() {
-            SkeletonAnimation.Skeleton.UpdateWorldTransform();
-            Bone rootBone = SkeletonAnimation.Skeleton.RootBone;
-            Collider.transform.Translate(new Vector3(0, rootBone.Y, 0));
-            DebugUI.Display_UpdatePos(Collider.transform.position);
+            Bone boneA = SkeletonAnimation.Skeleton.FindBone("a_toes_control");
+            Bone boneB = SkeletonAnimation.Skeleton.FindBone("b_toes_control");
+            Collider.offset = (boneA.GetSkeletonSpacePosition() + boneB.GetSkeletonSpacePosition()) / 2; //FIXME: an einer bone festmachen, zu viel rechnerei
         }
 
         private void HandleInput() {
