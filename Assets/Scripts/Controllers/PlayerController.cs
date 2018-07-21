@@ -86,13 +86,13 @@ namespace Dragonling.Controllers {
         }
 
         private void UpdateCameraPosition() {
-            Camera.transform.position = Collider.transform.position + _CameraOffset;
+            Camera.transform.position = Body.transform.position + _CameraOffset;
         }
 
         private void UpdateColiderPosition() {
-            Bone boneA = SkeletonAnimation.Skeleton.FindBone("a_toes_control");
-            Bone boneB = SkeletonAnimation.Skeleton.FindBone("b_toes_control");
-            Collider.offset = (boneA.GetSkeletonSpacePosition() + boneB.GetSkeletonSpacePosition()) / 2; //FIXME: an einer bone festmachen, zu viel rechnerei
+            Bone bone = SkeletonAnimation.Skeleton.FindBone("body");
+            Vector2 colliderOffset = new Vector2(0, bone.GetSkeletonSpacePosition().y - Collider.bounds.size.y);
+            Collider.offset = colliderOffset;
         }
 
         private void HandleInput() {

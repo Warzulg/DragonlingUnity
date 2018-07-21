@@ -36,7 +36,7 @@ namespace Dragonling.Controllers {
         }
 
         void Update() {
-
+            
         }
 
         private void FixedUpdate() {
@@ -46,8 +46,8 @@ namespace Dragonling.Controllers {
 
         private void UpdatePosition() {
             Shape.rotation = new Vector3(0, Player.Flipped ? -130 : 130, 0);
-            Player.SkeletonAnimation.Skeleton.UpdateWorldTransform();
             Bone bone = Player.SkeletonAnimation.Skeleton.FindBone("head_a");
+            bone.UpdateWorldTransform();
             Shape.position = new Vector3(bone.WorldX / 2, bone.WorldY / 2 - 0.2F, 0);
         }
 
