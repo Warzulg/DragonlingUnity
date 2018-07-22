@@ -15,12 +15,11 @@ namespace Dragonling.Controllers {
         private float _Acceleration = 200F;
         private float _JumpStrength = 100F;
         private float _FlightDragDiff = 2F;
-        private Vector3 _CameraOffset = new Vector3(4, 4, -10);
 
         private FireBreathController FireBreath;
         private Rigidbody2D Body;
         private PolygonCollider2D Collider;
-        private Camera Camera;
+        private CameraController Camera;
 
         public bool Moving;
         public bool Airborne;
@@ -61,8 +60,10 @@ namespace Dragonling.Controllers {
             AnimationState = SkeletonAnimation.AnimationState;
             Body = GetComponentInChildren<Rigidbody2D>();
             Collider = GetComponentInChildren<PolygonCollider2D>();
-            Camera = GetComponentInChildren<Camera>();
             FireBreath = GetComponentInChildren<FireBreathController>();
+
+            Camera = GetComponentInChildren<CameraController>();
+            Camera.Init(Body);
 
             AudioEmitter = GetComponentInChildren<AudioSource>();
             AudioClips = new Dictionary<string, AudioClip>();
@@ -82,11 +83,6 @@ namespace Dragonling.Controllers {
         private void FixedUpdate() {
             ResolveMovement();
             UpdateColiderPosition();
-            UpdateCameraPosition();
-        }
-
-        private void UpdateCameraPosition() {
-            Camera.transform.position = Body.transform.position + _CameraOffset;
         }
 
         private void UpdateColiderPosition() {
