@@ -61,33 +61,74 @@ namespace Dragonling.Controllers {
         private void Init() {
             DebugUI = FindObjectOfType<Canvas>().GetComponent<DebugUI>();
 
+            InitializeComponents();
+
+            Camera = GetComponentInChildren<CameraController>();
+            Camera.Init(Body);
+
+            InitializeAudioEmitter();
+
+            Flip(false);
+            SetAnim(AnimTrack.Movement, Anim.IDLE_NORMAL, true);
+
+            inputBuffer = new List<KeyPress>();
+
+            InitializeStateManager();
+        }
+
+        private void InitializeStateManager() {
+            stateManager = new StateManager(AnimationState);
+
+            stateManager.SetIdleAnimation(Anim.IDLE_NORMAL);
+
+            stateManager.RegisterState(
+                Anim.MOVE_RUNNING_LOOP,
+                Anim.MOVE_RUNNING_END_SHORT,
+                (int)AnimTrack.Movement,
+                new string[] { Anim.MOVE_JUMPING },
+                KeyCode.D,
+                KeyMode.Hold,
+                AnimationMode.Looping
+                );
+            stateManager.RegisterState(
+                Anim.MOVE_JUMPING,
+                "",
+                (int)AnimTrack.Movement,
+                new string[] { },
+                KeyCode.W,
+                KeyMode.OneShot,
+                AnimationMode.Once
+                );
+        }
+
+        private void InitializeComponents() {
             SkeletonAnimation = GetComponentInChildren<SkeletonAnimation>();
             AnimationState = SkeletonAnimation.AnimationState;
             Body = GetComponentInChildren<Rigidbody2D>();
             Collider = GetComponentInChildren<PolygonCollider2D>();
             FireBreath = GetComponentInChildren<FireBreathController>();
+        }
 
-            Camera = GetComponentInChildren<CameraController>();
-            Camera.Init(Body);
-
+        private void InitializeAudioEmitter() {
             AudioEmitter = GetComponentInChildren<AudioSource>();
             AudioClips = new Dictionary<string, AudioClip>();
             //FIXME: solchen scheiß in ne art ressource-helper auslagern:
             AudioClips.Add("step", Resources.Load<AudioClip>("Sounds/dragonling/step"));
             AudioClips.Add("stop_long", Resources.Load<AudioClip>("Sounds/dragonling/stop_long"));
             AudioClips.Add("stop_short", Resources.Load<AudioClip>("Sounds/dragonling/stop_short"));
-
-            Flip(false);
-            SetAnim(AnimTrack.Movement, Anim.IDLE_NORMAL, true);
         }
 
         void Update() {
-            HandleInput();
+            //RegisterInput();
+            //ProcessInputBuffer();
+            stateManager.ProcessStates();
         }
 
         private void FixedUpdate() {
-            ResolveMovement();
-            UpdateColiderPosition();
+            //ResolveMovement();
+            //UpdateColiderPosition();
+            //if (IsMoving)
+            //    Camera.MoveTo(CameraOffset + Body.transform.position);
         }
 
         private void UpdateColiderPosition() {
@@ -96,42 +137,95 @@ namespace Dragonling.Controllers {
             Collider.offset = colliderOffset;
         }
 
-        private void HandleInput() {
-            if (Input.anyKey) {
-                if (Input.GetKeyDown(KeyCode.W)) {
-                    if (!Flying && !Airborne && !AnimationLock(AnimTrack.Movement))
-                        Jump();
-                }
-                if (Input.GetKeyDown(KeyCode.A)) {
-                    Stop(false);
-                    MoveBackward();
+        private List<KeyPress> inputBuffer;
+        private KeyCode currentKeyDown;
+        private readonly KeyCode[] validInput = new KeyCode[] {
+            KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.Space, KeyCode.LeftAlt, KeyCode.F
+            };
+        struct KeyPress {
+            public bool Down;
+            public KeyCode Key;
+        }
+        private void RegisterInput() {
+            if (inputBuffer.Count == 0) {
+                inputBuffer.Add(new KeyPress { Key = KeyCode.None, Down = true });
+            }
+            if (inputBuffer.Count > 2) {
+                inputBuffer.RemoveRange(2, 1);
+            }
+            KeyPress first;
 
-                } else if (Input.GetKeyDown(KeyCode.D)) {
-                    Stop(false);
+            if (Input.anyKey) {
+                if (Input.GetKeyUp(currentKeyDown)) {
+                    first = inputBuffer.First();
+                    inputBuffer.Remove(first);
+                    currentKeyDown = first.Key;
+                }
+
+                foreach (KeyCode key in validInput) {
+                    if (Input.GetKey(key)) {
+                        var press = new KeyPress { Key = key };
+
+                        if (Input.GetKeyDown(key)) {
+                            press.Down = true;
+                        } else {
+                            press.Down = false;
+                        }
+
+                        this.inputBuffer.Insert(0, press);
+                    }
+                };
+            }
+            first = inputBuffer.First();
+            inputBuffer.Remove(first);
+            currentKeyDown = first.Key;
+        }
+
+
+        /*
+
+
+            BAU EINFACH ALLES AUF FEST DEFINIERTE STATES UM
+            KOMBINATIONEN AUS UNTER-ZUSTÄNDEN
+            ODER SO EIN MIST
+    */
+
+        private void ProcessInputBuffer() {
+            switch(currentKeyDown) {
+                case (KeyCode.W):
+                    if (!IsFlying && !IsAirborne)
+                        Jump();
+                    break;
+                case (KeyCode.A):
+                    MoveBackward();
+                    break;
+                case (KeyCode.D):
                     MoveForward();
-                } else if (Input.GetKeyDown(KeyCode.S)) {
-                    if (!Flying && !Airborne && !AnimationLock(AnimTrack.Movement))
+                    break;
+                case (KeyCode.S):
+                    if (!IsFlying && !IsAirborne)
                         Duck();
-                }
-                if (Input.GetKeyDown(KeyCode.Space)) {
-                    if (!Flying && !Airborne)
+                    break;
+                case (KeyCode.Space):
+                    if (!IsFlying && !IsAirborne)
                         AttackBasic();
-                }
-                if (Input.GetKeyDown(KeyCode.LeftAlt)) {
-                    if (!Flying && !Airborne)
+                    break;
+                case (KeyCode.LeftAlt):
+                    if (!IsFlying && !IsAirborne)
                         AttackStrong();
-                }
-                if (Input.GetKeyDown(KeyCode.F)) {
-                    if (Flying) {
+                    break;
+                case (KeyCode.F):
+                    if (IsFlying) {
                         Land();
                     } else {
                         Fly();
                     }
-                }
-            } else {
-                if (!AnimationLock(AnimTrack.Movement) && !Flying && !Airborne) {
-                    Stop(true);
-                }
+                    break;
+                default:
+                    if (GetCurrentAnim(AnimTrack.Movement).Name != Anim.MOVE_JUMPING && !IsFlying && !IsAirborne) {
+                        Stop(true);
+                    }
+                    break;
             }
         }
 
