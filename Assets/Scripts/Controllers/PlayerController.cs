@@ -12,19 +12,24 @@ using Dragonling.Utility;
 namespace Dragonling.Controllers {
 
     public class PlayerController : AnimatedEntity {
-        private float _Acceleration = 200F;
-        private float _JumpStrength = 100F;
-        private float _FlightDragDiff = 2F;
+        private StateManager stateManager;
+
+        private readonly float _Acceleration = 200F;
+        private readonly float _JumpStrength = 100F;
+        private readonly float _FlightDragDiff = 2F;
+        private readonly Vector3 _CameraOffset = new Vector3(4, 4, -10);
+
+        private Vector3 CameraOffset;
 
         private FireBreathController FireBreath;
         private Rigidbody2D Body;
         private PolygonCollider2D Collider;
         private CameraController Camera;
 
-        public bool Moving;
-        public bool Airborne;
-        public bool Flying;
-        public bool Flipped;
+        public bool IsMoving;
+        public bool IsAirborne;
+        public bool IsFlying;
+        public bool IsFlipped;
 
         private Dictionary<string, AudioClip> AudioClips;
         private AudioSource AudioEmitter;
@@ -131,21 +136,22 @@ namespace Dragonling.Controllers {
         }
 
         private void ResolveMovement() {
-            Moving = Body.velocity.x != 0F;
-            Airborne = Body.velocity.y != 0F;
+            IsMoving = Body.velocity.x != 0F;
+            IsAirborne = Body.velocity.y != 0F;
 
-            if (Input.anyKey) {
-                if (Input.GetKey(KeyCode.A)) {
-                    Body.AddForce(new Vector2(-_Acceleration, 0), ForceMode2D.Force);
-                } else if (Input.GetKey(KeyCode.D)) {
-                    Body.AddForce(new Vector2(_Acceleration, 0), ForceMode2D.Force);
-                }
+            if (currentKeyDown == KeyCode.A) {
+                Body.AddForce(new Vector2(-_Acceleration, 0), ForceMode2D.Force);
+            } else if (currentKeyDown == KeyCode.D) {
+                Body.AddForce(new Vector2(_Acceleration, 0), ForceMode2D.Force);
             }
         }
 
         private void Flip(bool flipX) {
             Collider.transform.rotation = Quaternion.LookRotation(flipX ? Vector3.back : Vector3.forward, Vector3.up);
-            Flipped = flipX;
+            IsFlipped = flipX;
+            CameraOffset = _CameraOffset;
+            if (flipX)
+                CameraOffset.Scale(new Vector3(-1, 1, 1));
         }
 
         private bool AnimationLock(AnimTrack track) {
@@ -179,7 +185,7 @@ namespace Dragonling.Controllers {
             Body.AddForce(new Vector2(0, _JumpStrength * 2), ForceMode2D.Impulse);
             Body.drag -= _FlightDragDiff;
             SetAnim(AnimTrack.Movement, Anim.TAKING_OFF, true);
-            Flying = true;
+            IsFlying = true;
         }
 
         private void Land() {
@@ -188,19 +194,19 @@ namespace Dragonling.Controllers {
             Body.AddForce(new Vector2(0, -_JumpStrength), ForceMode2D.Force);
             Body.drag += _FlightDragDiff;
             SetAnim(AnimTrack.Movement, Anim.IDLE_NORMAL, true);
-            Flying = false;
+            IsFlying = false;
         }
 
         private void AttackBasic() {
-            SetAnim(AnimTrack.Attack, Moving ? Anim.ATTACK_BASIC_MOVING : Anim.ATTACK_BASIC_STATIC, false);
+            SetAnim(AnimTrack.Attack, IsMoving ? Anim.ATTACK_BASIC_MOVING : Anim.ATTACK_BASIC_STATIC, false);
             AddAnimEmpty(AnimTrack.Attack, 0);
         }
 
         private void AttackStrong() {
-            FireBreath.SetStartDelay(Moving ? 0.1F : 0.3F);
-            FireBreath.SetSize(Moving ? 0.75F : 1);
-            FireBreath.SetShapeScale(Moving ? new Vector3(1, 0.2F, 1) : new Vector3(1, 0.5F, 1));
-            SetAnim(AnimTrack.Attack, Moving ? Anim.ATTACK_STRONG_MOVING : Anim.ATTACK_STRONG_STATIC, false);
+            FireBreath.SetStartDelay(IsMoving ? 0.1F : 0.3F);
+            FireBreath.SetSize(IsMoving ? 0.75F : 1);
+            FireBreath.SetShapeScale(IsMoving ? new Vector3(1, 0.2F, 1) : new Vector3(1, 0.5F, 1));
+            SetAnim(AnimTrack.Attack, IsMoving ? Anim.ATTACK_STRONG_MOVING : Anim.ATTACK_STRONG_STATIC, false);
             AddAnimEmpty(AnimTrack.Attack, 0);
             FireBreath.Activate();
         }
@@ -216,14 +222,11 @@ namespace Dragonling.Controllers {
         }
 
         private void Move() {
-            if (!Flying && !Airborne && !AnimationLock(AnimTrack.Movement)) {
-                if (!Moving) {
+            if (!IsFlying && !IsAirborne && !AnimationLock(AnimTrack.Movement)) {
+                if (!IsMoving) {
                     ClearAnim(AnimTrack.Movement);
                     SetAnim(AnimTrack.Movement, Anim.MOVE_RUNNING_START, false);
                     AddAnim(AnimTrack.Movement, Anim.MOVE_RUNNING_LOOP, true);
-                } else {
-                    ClearAnim(AnimTrack.Movement);
-                    SetAnim(AnimTrack.Movement, Anim.MOVE_RUNNING_LOOP, true);
                 }
             }
             AudioEmitter.loop = true;
@@ -233,13 +236,13 @@ namespace Dragonling.Controllers {
 
         private void Stop(bool goIdle) {
             AudioEmitter.loop = false;
-            if (!Airborne) {
+            if (!IsAirborne) {
                 if (goIdle) {
                     if (GetCurrentAnim(AnimTrack.Movement).Name != Anim.IDLE_NORMAL
                          && GetCurrentAnim(AnimTrack.Movement).Name != Anim.MOVE_RUNNING_END_SHORT
                          && GetCurrentAnim(AnimTrack.Movement).Name != Anim.MOVE_RUNNING_END_LONG) {
                         DebugUI.Flash_IdleStart();
-                        if (!Moving) {
+                        if (!IsMoving) {
                             SetAnim(AnimTrack.Movement, Anim.IDLE_NORMAL, true);
                         } else {
                             if (CurrectTrackEntry(AnimTrack.Movement).TrackTime < GetCurrentAnim(AnimTrack.Movement).Duration) {
@@ -265,10 +268,10 @@ namespace Dragonling.Controllers {
         private void Jump() {
             //Body.AddForce(new Vector2(0, _JumpStrength), ForceMode2D.Impulse);
             SetAnim(AnimTrack.Movement, Anim.MOVE_JUMPING, false);
-            Airborne = true;
+            IsAirborne = true;
             CurrectTrackEntry(AnimTrack.Movement).Complete += delegate {
-                Airborne = false;
-                SetAnim(AnimTrack.Movement, Moving ? Anim.MOVE_RUNNING_LOOP : Anim.IDLE_NORMAL, true);
+                IsAirborne = false;
+                SetAnim(AnimTrack.Movement, IsMoving ? Anim.MOVE_RUNNING_LOOP : Anim.IDLE_NORMAL, true);
                 AudioEmitter.loop = true;
                 AudioEmitter.clip = AudioClips["step"];
                 AudioEmitter.Play();
@@ -278,7 +281,7 @@ namespace Dragonling.Controllers {
 
         private void Duck() {
             SetAnim(AnimTrack.Movement, Anim.INTERACT_LOOT, false);
-            AddAnim(AnimTrack.Movement, Moving ? Anim.MOVE_RUNNING_LOOP : Anim.IDLE_NORMAL, true);
+            AddAnim(AnimTrack.Movement, IsMoving ? Anim.MOVE_RUNNING_LOOP : Anim.IDLE_NORMAL, true);
         }
     }
 
